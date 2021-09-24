@@ -1,0 +1,13 @@
+{
+	"paths": {
+		"models_route": "models/models_artifacts/", 
+		"models_route_lanenet": "models/models_artifacts/lanenet/"
+	}, 
+	"models": {
+		"frontal": ["delineation", "street_lighting", "carriageway", "service_road", "road_condition", "skid_resistance", "upgrade_cost", "speed_management", "bicycle_facility", "quality_of_curve", "vehicle_parking", "property_access_points"], 
+		"lateral": ["area_type", "land_use"]
+	},
+	"lanenet":{
+		"input_shape": [512,1024,3]
+	}
+}
