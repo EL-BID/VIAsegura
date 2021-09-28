@@ -1,0 +1,2 @@
+include viasegura_test/config.json
+include viasegura_test/lanenet_config.json
