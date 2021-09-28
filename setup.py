@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 VERSION = '0.0.1.22' 
-DESCRIPTION = 'viasegura_test'
+DESCRIPTION = 'A python package to interact with Inter-American Development Bank machine learning modelsto automatic label elements for iRAP certification'
 LONG_DESCRIPTION = 'Test for package that executes iRAP label module'
 
 setup(
