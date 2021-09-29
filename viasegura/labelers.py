@@ -130,6 +130,17 @@ class ModelLabeler(Preprocess):
 		Methods
 		-------
 
+		get_labels:
+			Receive the images, groups them, scores them and determine the final class
+
+		get_raw_labels:
+			Receive the group of images and scores them
+
+
+		get_discrete_value:
+			Receive the scores of the groups and determines the final class
+
+
 		"""
 		self.downloader = Downloader()
 		self.downloader.check_artifacts()
@@ -355,10 +366,67 @@ class ModelLabeler(Preprocess):
 
 class LanesLabeler(Preprocess):
 	CONFIG_PATH = 'config.json'
-	MASK_BATCH_SIZE = 4
 	
 	def __init__(self, lanenet_device = '/device:CPU:0', models_device = '/device:CPU:0',  system_path = viasegura_path,  verbose = 0):
+		"""
+		This class allows to run models to identify iRAP elements based on the implementation of Lanenet model (which allows to identify the delineation marks that divide channels on the street)
+		Lanenet model create a mask with the delineation of the streets and mask the original image to apply further models over it.
+		Based on the masked iamge, the object scores the groups images with models created for masked images based on the iRAP specifications
+		This model use 2 levels so it needs to specify 2 devices to run the models
+
+		Parameters
+		----------
 		
+		lanenet_device: str (Default '/device:CPU:0')
+			The name of the device that will be running the lanenet model.
+			'/device:CPU:0' if you want to run them on the cpu
+			'/device:GPU:0' if you have 1 GPU available and one to use all its resources
+			If you have more than one GPU, you can select the number of the device, also \
+			you can use it's power combined or reduce the resources of the GPU you want to use.
+			It is recomended to use the logical gpus separation to run the models as explained on Tensorflow documentation
+			To do so reffer to the tensorflow documentation on https://www.tensorflow.org/guide/gpu
+
+		models_device: str (Default '/device:CPU:0')
+			The name of the device that will be running the model masked image models.
+			'/device:CPU:0' if you want to run them on the cpu
+			'/device:GPU:0' if you have 1 GPU available and one to use all its resources
+			If you have more than one GPU, you can select the number of the device, also \
+			you can use it's power combined or reduce the resources of the GPU you want to use.
+			It is recomended to use the logical gpus separation to run the models as explained on Tensorflow documentation
+			To do so reffer to the tensorflow documentation on https://www.tensorflow.org/guide/gpu
+
+		config_path: str (default recomended 'config.json')
+			The route to the file which contains the configuration of the package. To change it you must have a diferent config file. If you don't have an specific use case for change this option use Default
+
+
+		verbose: int (default 0)
+			Select the level of string information you want to be printed on the screen while running the process
+			0: All the information
+			Any other: No printing
+
+		Properties 
+		----------
+
+		Labeler:
+			An instance from ModelLabeler with the models created for masked lanenet images.
+			Refer to ModelLabeler documentation to see inputs, properties and methods
+
+		lanenet: list
+			Model that creates the masked image
+
+
+		Methods
+		-------
+
+		get_labels:
+			Receive the images, create masks and scores the final models classes
+
+		get_mask_images:
+			Receive the iamges and transform them into masked images
+
+		"""
+
+
 		self.verbose = verbose
 		self.downloader = Downloader()
 		self.downloader.check_artifacts()
@@ -372,26 +440,78 @@ class LanesLabeler(Preprocess):
 			print('Lanenet model loaded successfully')
 	
 	def load_config(self):
+
+		"""
+		Function to load data and parameters from the models
+		This function only loads the configuration to the lanenet model. The configuration for the models \
+		to the masked iamges are on the ModelLabeler instance inside the LanesLabeler with its own configuration file
+
+		"""
 		config = self.read_json(self.system_path+self.CONFIG_PATH)
 		self.models_route = config['paths']['models_route_lanenet']
 		self.img_shape = tuple([int(n) for n in config['lanenet']['input_shape']]) 
 	
 	def load_lanenet_model(self):
+
+		"""
+		Function to load the lanenet model on the instance using the corresponding device
+
+		"""
+
 		with tf.device(self.lanenet_device):
 			if not self.downloader.check_files(self.system_path+self.models_route+'lanenet.h5'):
 				raise ImportError("The artifacts for the model lanenet are not present use viasegura.download_models function to download them propertly")
 			self.lanenet = tf.keras.models.load_model(self.system_path+self.models_route+'lanenet.h5', custom_objects={ 'loss_instance': loss_instance })
 	
-	def get_labels(self,images):
+	def get_labels(self,images, batch_size = 4):
+		"""
+		Scores the data points from the images using the diferent models inside the instance
+		
+		Parameters
+		----------
+
+		images: np.array[int]
+			numpy array of the images with the corresponding dimensions and size \
+		to input the model (n_groups , 5, width, deepth, channels)
+
+		batch_size: int (default 4)
+			Number of images that can be scored at the same time. This number can cause a problem on the execution depending on the resources available for scoring.
+			The default value has been tested on a NVIDIA RTX2070 with no issues, so we recommend to use this number if you have a GPU with similar memory available
+
+
+		Returns
+		----------
+		dict[] np.array shape(n_groups,n_clases)
+			A dictionary with the model name as key and an array of doubles as \
+			values with the probability to belong for all of the clases
+		"""
+
 		mask_images = []
-		for offset in range(0,images.shape[0],self.MASK_BATCH_SIZE):
-			mask_images.append(self.get_mask_images(images[offset:offset+self.MASK_BATCH_SIZE]))
+		for offset in range(0,images.shape[0],batch_size):
+			mask_images.append(self.get_mask_images(images[offset:offset+batch_size]))
 		mask_images = np.concatenate(mask_images)
 		if self.verbose ==0:
 			print('Mask images generated sucessfully')
 		return self.labeler.get_labels(mask_images)
 	
 	def get_mask_images(self, images):
+
+		"""
+		Use the lanenet model to get the mask image for every image
+		
+		Parameters
+		----------
+
+		images: np.array[int]
+			numpy array of the images with the corresponding dimensions and size \
+		to input the model (n_groups , 5, width, deepth, channels)
+
+		Returns
+		----------
+		np.array shape(n_iamges,widht, height, channels)
+			Images masked and transformed
+
+		"""
 		images = tf.image.resize(images, self.img_shape[:2]).numpy()/255.0
 		with tf.device(self.lanenet_device):
 			pred = self.lanenet.predict(images)
@@ -402,6 +522,16 @@ class LanesLabeler(Preprocess):
 		return transformed_images
 	
 	def _postprocess(self, binary_output, min_area_threshold=100, threshold=0.15):
+		"""
+		Postprocess for the binary output of the mask image
+
+		Parameters
+		----------
+		binary_output: np.array[int]
+			numpy array of the image with the corresponding dimensions and size (width, deepth)
+			
+		"""
+
 		binary_image_transformed = np.zeros(binary_output.shape)
 		binary_image_transformed[binary_output>threshold]=255
 		binary_image_transformed = binary_image_transformed.astype('uint8')

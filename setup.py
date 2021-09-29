@@ -13,7 +13,7 @@ LONG_DESCRIPTION = (this_directory / "README.md").read_text()
 
 setup(
        # the name must match the folder name 'verysimplemodule'
-        name="viasegura_test", 
+        name="viasegura", 
         version=VERSION,
         author="Jose Maria Marquez Blanco",
         author_email="jose.marquez.blanco@gmail.com",
