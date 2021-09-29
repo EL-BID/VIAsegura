@@ -74,7 +74,7 @@ class Preprocess:
 
 class ModelLabeler(Preprocess):
 	
-	def __init__(self, model_type = 'frontal', model_filter = None, device = '/device:CPU:0', config_path = viasegura_path+'config.json', system_path = viasegura_path, verbose = 0):
+	def __init__(self, model_type = 'frontal', model_filter = None, device = '/device:CPU:0', config_path = 'config.json', system_path = viasegura_path, verbose = 0):
 		"""
 		This class allows to run models to identify iRAP elements on streets in order to make the iRAP clasification 
 		based on images every 20 metters. There are models that work with the lateral images, and others with the frontal image
@@ -84,6 +84,16 @@ class ModelLabeler(Preprocess):
 		
 		model_type: str
 			The camera direction which the photo was taken. It can be "frontal" or "lateral"
+		
+		model filter: list[] str (default None)
+			List with the models that will be used on the instance of the labeler. If this is None then it will use all of the same ModelType.
+			Example: ['delineation','carriageway','street_lighting']
+		
+		config_path: str (default recomended 'config.json')
+			The route to the file which contains the configuration of the package. To change it you must have a diferent config file. If you don't have an specific use case for change this option use Default
+
+		system path: str (default Library instalation path)
+			The route to the config file and to the artifacts that will be used by the labeler. This is the route where the models will be load from. In this route must be the config file as well. If you don't have and specific use case for this use Default.
 
 		config_path type: str
 			The route to the config file of the model
@@ -100,13 +110,32 @@ class ModelLabeler(Preprocess):
 			Select the level of string information you want to be printed on the screen while running the process
 			0: All the information
 			Any other: No printing
+
+		Properties 
+		----------
+		models: list
+			The models loaded on the instance of the class
+
+		classes: dict
+			The classes for each model loaded on the instance
+
+		thresholds: dict
+			Specific thresholds for each model loaded on the instance
+
+		model: tensorflow.python.keras.engine.functional.Functinal
+			Object with the model in charge to calculate the scores for the images for each submodel
+
+
+
+		Methods
+		-------
+
 		"""
-		### filtro de modelos
 		self.downloader = Downloader()
 		self.downloader.check_artifacts()
 		self.model_filter = model_filter
-		self.config_path = config_path
 		self.system_path = system_path
+		self.config_path = self.system_path+config_path
 		self.model_type = model_type
 		self.device = device
 		self.verbose = verbose
@@ -195,16 +224,6 @@ class ModelLabeler(Preprocess):
 		"""
 		Load all the models on the configuration file
 
-		Parameters
-		----------
-
-		models: list[str]
-			List of all the models available for loading
-
-		models_route: str
-			path to the model 
-
-
 		Returns
 		----------
 		tf.keras.models.Model
@@ -229,6 +248,11 @@ class ModelLabeler(Preprocess):
 		images: np.array[int]
 			numpy array of the images, the images must be on the same size \
 			The dimension of the matrix must be (n_images,width, deepth, channels)
+
+		batch_size: int (default 2)
+			Number of groups of images that can be scored at the same time. This number can cause a problem on the execution depending on the resources available for scoring.
+			When you have low number of models loaded you can increase the batch size, but if the number is high we recomend (depending on the GPU and resources assigned to the model) to decrease this number.
+			The default value has been tested on a NVIDIA RTX2070 with no issues, so we recommend to use this number if you have a GPU with similar memory available
 
 		Returns
 		----------
@@ -258,6 +282,12 @@ class ModelLabeler(Preprocess):
 		images: np.array[int]
 			numpy array of the images with the corresponding dimensions and size \
 		to input the model (n_groups , 5, width, deepth, channels)
+
+		batch_size: int (default 2)
+			Number of groups of images that can be scored at the same time. This number can cause a problem on the execution depending on the resources available for scoring.
+			When you have low number of models loaded you can increase the batch size, but if the number is high we recomend (depending on the GPU and resources assigned to the model) to decrease this number.
+			The default value has been tested on a NVIDIA RTX2070 with no issues, so we recommend to use this number if you have a GPU with similar memory available
+
 
 		Returns
 		----------

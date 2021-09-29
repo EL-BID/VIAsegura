@@ -63,7 +63,7 @@ You can also clone the repository but remember that the package is configured to
 ```
 from viasegura_test import download_models
 
-download_models(aws_access_key = <aws_access_key>, aws_secret_key = <aws_secret_key> , system_path = <new_working_path>)
+download_models(aws_access_key = <aws_access_key>, aws_secret_key = <aws_secret_key>, system_path = <new_working_path>)
 ```
 
 Remember to put that path every time you instantiate a model so that you can find the artifacts you need to run them.
