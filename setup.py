@@ -21,7 +21,7 @@ setup(
         long_description=LONG_DESCRIPTION,
         long_description_content_type='text/markdown',
         packages=find_packages(),
-        install_requires=['tensorflow-gpu==2.3.0','numpy==1.18.5', 'tqdm', 'opencv-contrib-python==4.2.0.34','boto3==1.14.37'],        
+        install_requires=['tensorflow-gpu==2.5.0','numpy==1.18.5', 'tqdm', 'opencv-contrib-python==4.2.0.34','boto3==1.14.37'],        
         keywords=['Machine Learning', 'safe road'],
         classifiers= [
             "Development Status :: 3 - Alpha",

@@ -1,6 +1,5 @@
-tensorflow-gpu==2.3.0
 tqdm==4.48.2
 opencv-contrib-python==4.2.0.34
 numpy==1.18.5
-pip==19.0.3
+pip==19.2
 wheel==0.33.1
