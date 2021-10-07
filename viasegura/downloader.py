@@ -6,7 +6,7 @@ import sys
 viasegura_path = Path(__file__).parent
 
 class Downloader:
-	def __init__(self, models_path = viasegura_path+'models/'):
+	def __init__(self, models_path = viasegura_path / 'models'):
 		"""
 		This class allows to download de models and other model data from the Inter-American Development Bank repositories
 		
@@ -70,11 +70,11 @@ class Downloader:
 		for my_bucket_object in my_bucket.objects.all():
 			elements = my_bucket_object.key.split('/')
 			if elements[-1]=="":
-				Path(self.models_path+my_bucket_object.key).mkdir(parents=True, exist_ok=True)
+				(self.models_path / my_bucket_object.key).mkdir(parents=True, exist_ok=True)
 			else:
-				my_file = Path(self.models_path+my_bucket_object.key)
-				if not self.check_files(self.models_path+my_bucket_object.key):
-					with open(self.models_path+my_bucket_object.key, 'wb') as f:
+				my_file = self.models_path / Path(my_bucket_object.key)
+				if not self.check_files(self.models_path / Path(my_bucket_object.key)):
+					with open(self.models_path / Path(my_bucket_object.key), 'wb') as f:
 						s3_client.download_fileobj('via-segura-artifacts', my_bucket_object.key, f)
 					
 		print('Elements Downloaded')

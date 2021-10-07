@@ -44,7 +44,7 @@ Some of the features now available are as follows:
 To install you can use the following commands
 
 ```
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple viasegura_test==0.0.1.25
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple viasegura
 
 ```
 

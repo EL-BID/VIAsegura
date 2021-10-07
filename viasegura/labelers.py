@@ -4,9 +4,10 @@ import os
 import sys
 import cv2
 import numpy as np
-from viasegura_test.utils.lanenet import loss_instance
-from viasegura_test.downloader import Downloader
+from viasegura.utils.lanenet import loss_instance
+from viasegura.downloader import Downloader
 from tqdm import tqdm
+from pathlib import Path
 
 viasegura_path = Path(__file__).parent
 	
@@ -144,7 +145,7 @@ class ModelLabeler(Preprocess):
 		self.downloader.check_artifacts()
 		self.model_filter = model_filter
 		self.system_path = system_path
-		self.config_path = self.system_path+config_path
+		self.config_path = self.system_path / Path(config_path)
 		self.model_type = model_type
 		self.device = device
 		self.verbose = verbose
@@ -173,7 +174,7 @@ class ModelLabeler(Preprocess):
 		if self.model_type not in ['lateral','frontal']:
 			raise NameError(f'The model type "{self.model_type}" is not defined')
 		config = self.read_json(config_path)
-		self.models_route = config['paths']['models_route']
+		self.models_route = Path(config['paths']['models_route'])
 		self.models = config["models"][self.model_type]
 		
 		if self.model_filter:
@@ -189,7 +190,7 @@ class ModelLabeler(Preprocess):
 		for model in self.models:
 			if not self.downloader.check_files(self.system_path+self.models_route+model+'.json'):
 				raise ImportError(f'The artifacts for the model {model} are not present use viasegura.download_models function to download them propertly')
-			model_config = self.read_json(self.system_path+self.models_route+model+'.json')
+			model_config = self.read_json(self.system_path / self.models_route / Path(model+'.json'))
 			self.classes[model] = model_config['classes']
 			self.classes[model] = {int(k):v for k,v in self.classes[model].items()}
 			self.thresholds[model] = model_config['thresholds']
@@ -221,9 +222,9 @@ class ModelLabeler(Preprocess):
 			Model Type object
 		"""
 		with tf.device(self.device):
-			if not self.downloader.check_files(self.system_path+model_route):
+			if not self.downloader.check_files(self.system_path / model_route):
 				raise ImportError(f'The artifacts for the model {model_name} are not present use viasegura.download_models function to download them propertly')
-			model = tf.keras.models.load_model(self.system_path+model_route)
+			model = tf.keras.models.load_model(self.system_path / model_route)
 			input_m = tf.keras.layers.Input((5,256,256,3))
 			output = model(input_m)
 			_model = tf.keras.models.Model(input_m, output, name=model_name)
@@ -242,7 +243,7 @@ class ModelLabeler(Preprocess):
 			input_model = tf.keras.layers.Input((5,256,256,3))
 			models_artifacts = []
 			for m in self.models:
-				models_artifacts.append(self._load_single_model(self.models_route+m+'.h5', m))
+				models_artifacts.append(self._load_single_model(self.models_route / Path(m+'.h5'), m))
 				if self.verbose==0:
 					print(f'Loaded model "{m}"')
 			outputs = []
@@ -393,7 +394,7 @@ class LanesLabeler(Preprocess):
 			It is recomended to use the logical gpus separation to run the models as explained on Tensorflow documentation
 			To do so reffer to the tensorflow documentation on https://www.tensorflow.org/guide/gpu
 
-		config_path: str (default recomended 'config.json')
+		config_path: Path (default recomended 'config.json')
 			The route to the file which contains the configuration of the package. To change it you must have a diferent config file. If you don't have an specific use case for change this option use Default
 
 
@@ -433,7 +434,7 @@ class LanesLabeler(Preprocess):
 		self.models_device = models_device
 		self.load_config()
 		self.load_lanenet_model()
-		self.labeler = ModelLabeler(model_type = 'frontal', device = self.models_device, config_path = viasegura_path+'lanenet_config.json')
+		self.labeler = ModelLabeler(model_type = 'frontal', device = self.models_device, config_path = viasegura_path / 'lanenet_config.json')
 		if self.verbose ==0:
 			print('Lanenet model loaded successfully')
 	
@@ -446,7 +447,7 @@ class LanesLabeler(Preprocess):
 
 		"""
 		config = self.read_json(self.system_path+self.CONFIG_PATH)
-		self.models_route = config['paths']['models_route_lanenet']
+		self.models_route = Path(config['paths']['models_route_lanenet'])
 		self.img_shape = tuple([int(n) for n in config['lanenet']['input_shape']]) 
 	
 	def load_lanenet_model(self):
@@ -457,7 +458,7 @@ class LanesLabeler(Preprocess):
 		"""
 
 		with tf.device(self.lanenet_device):
-			if not self.downloader.check_files(self.system_path+self.models_route+'lanenet.h5'):
+			if not self.downloader.check_files(self.system_path / self.models_route / 'lanenet.h5'):
 				raise ImportError("The artifacts for the model lanenet are not present use viasegura.download_models function to download them propertly")
 			self.lanenet = tf.keras.models.load_model(self.system_path+self.models_route+'lanenet.h5', custom_objects={ 'loss_instance': loss_instance })
 	

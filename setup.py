@@ -1,15 +1,16 @@
 from setuptools import setup, find_packages
-
+import pkg_resources
 from pathlib import Path
 
 this_directory = Path(__file__).parent
-VERSION = '0.0.1.27' 
+VERSION = '0.0.1.32' 
 DESCRIPTION = 'A python package to interact with Inter-American Development Bank machine learning models to automatic label elements for iRAP certification'
 
 LONG_DESCRIPTION = (this_directory / "README.md").read_text()
 
 
-
+with Path('requirements.txt').open() as requirements_txt:
+    install_requires = [str(requirement) for requirement in pkg_resources.parse_requirements(requirements_txt)]
 
 setup(
        # the name must match the folder name 'verysimplemodule'
@@ -21,7 +22,7 @@ setup(
         long_description=LONG_DESCRIPTION,
         long_description_content_type='text/markdown',
         packages=find_packages(),
-        install_requires=['tensorflow-gpu==2.5.1','numpy==1.18.5', 'tqdm', 'opencv-contrib-python==4.2.0.34','boto3==1.14.37'],        
+        install_requires=install_requires,        
         keywords=['Machine Learning', 'safe road'],
         classifiers= [
             "Development Status :: 3 - Alpha",

@@ -1,5 +1,4 @@
-tqdm==4.48.2
-opencv-contrib-python==4.2.0.34
-numpy==1.18.5
-pip==19.2
-wheel==0.33.1
+tensorflow-gpu==2.6.0
+tqdm
+opencv-contrib-python>=4.2.0.34
+boto3>=1.14.37'
