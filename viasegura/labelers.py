@@ -8,9 +8,7 @@ from viasegura_test.utils.lanenet import loss_instance
 from viasegura_test.downloader import Downloader
 from tqdm import tqdm
 
-python_path = os.path.dirname(sys.executable)
-library_path = '\\Lib\\site-packages\\viasegura_test\\'
-viasegura_path = python_path+library_path
+viasegura_path = Path(__file__).parent
 	
 class Preprocess:
 	def __init__(self):

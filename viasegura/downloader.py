@@ -3,10 +3,7 @@ import boto3
 import os
 import sys
 
-python_path = os.path.dirname(sys.executable)
-library_path = '\\Lib\\site-packages\\viasegura_test\\'
-viasegura_path = python_path+library_path
-	
+viasegura_path = Path(__file__).parent
 
 class Downloader:
 	def __init__(self, models_path = viasegura_path+'models/'):

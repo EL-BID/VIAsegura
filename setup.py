@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 from pathlib import Path
 
 this_directory = Path(__file__).parent
-VERSION = '0.0.1.26' 
-DESCRIPTION = 'A python package to interact with Inter-American Development Bank machine learning modelsto automatic label elements for iRAP certification'
+VERSION = '0.0.1.27' 
+DESCRIPTION = 'A python package to interact with Inter-American Development Bank machine learning models to automatic label elements for iRAP certification'
 
 LONG_DESCRIPTION = (this_directory / "README.md").read_text()
 
@@ -26,8 +26,9 @@ setup(
         classifiers= [
             "Development Status :: 3 - Alpha",
             "Programming Language :: Python :: 3",
-            "Operating System :: MacOS :: MacOS X",
-            "Operating System :: Microsoft :: Windows",
+            "Operating System :: OS Independent",
+            "Programming Language :: Python :: 3.7",    
         ],
+        python_requires=">=3.7", 
         include_package_data=True
 )

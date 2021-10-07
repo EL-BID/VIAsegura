@@ -1,5 +1,5 @@
-from viasegura_test.labelers import Preprocess, ModelLabeler, LanesLabeler
-from viasegura_test.downloader import Downloader
+from viasegura.labelers import Preprocess, ModelLabeler, LanesLabeler
+from viasegura.downloader import Downloader
 import os 
 import sys
 

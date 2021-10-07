@@ -51,7 +51,7 @@ pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://
 Then to download the models use the following commands
 
 ```
-from viasegura_test import download_models
+from viasegura import download_models
 
 download_models(aws_access_key = <aws_access_key>, aws_secret_key = <aws_secret_key> )
 ```
@@ -61,7 +61,7 @@ To obtain the corresponding credentials for downloading the models, please conta
 You can also clone the repository but remember that the package is configured to download the models and place them in the root of the environment. You can change the locations manually as follows
 
 ```
-from viasegura_test import download_models
+from viasegura import download_models
 
 download_models(aws_access_key = <aws_access_key>, aws_secret_key = <aws_secret_key>, system_path = <new_working_path>)
 ```
