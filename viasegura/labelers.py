@@ -84,7 +84,7 @@ class ModelLabeler(Preprocess):
 		model_type: str
 			The camera direction which the photo was taken. It can be "frontal" or "lateral"
 		
-		model filter: list[] str (default None)
+		model_filter: list[] str (default None)
 			List with the models that will be used on the instance of the labeler. If this is None then it will use all of the same ModelType.
 			Example: ['delineation','carriageway','street_lighting']
 		

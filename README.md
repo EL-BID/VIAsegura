@@ -1,6 +1,7 @@
 # VIAsegura
 
 ## Project Description
+---
 
 VIAsegura is an API that helps to use artificial intelligence models developed by the Inter-American Development Bank to automatically tag items on the streets. The tags it places are some of those needed to implement the iRAP road safety methodology. 
 
@@ -32,6 +33,7 @@ So far, 15 models compatible with the iRAP labeling specifications have been dev
 Some of the models can identify all the classes or categories, others can help you sort through the available options.
 
 ## Main Features
+---
 
 Some of the features now available are as follows:
 
@@ -40,6 +42,7 @@ Some of the features now available are as follows:
 - Download models directly into the root of the package
 
 ## Instalation
+---
 
 To install you can use the following commands
 
@@ -87,6 +90,7 @@ download_models(aws_access_key = <aws_access_key>, signature = <signature>, expi
 Remember to put that path every time you instantiate a model so that you can find the artifacts you need to run them.
 
 ## Using the Models
+---
 
 In order to make the instance of a model you can use the following commands
 
@@ -134,3 +138,10 @@ frontal_labeler = ModelLabeler('frontal', device='/device:GPU:0')
 
 You can modify the devices used according to the TensorFlow documentation regarding GPU usage (see https://www.tensorflow.org/guide/gpu)
 
+## Autor/es
+---
+
+Este sistema ha sido desarrollado por:
+
+<a href="https://github.com/J0s3M4rqu3z" target="blank">Jose Maria Marquez Blanco</a>
+<a href="https://www.linkedin.com/in/joancerretani/" target="blank">Joan Alberto Cerretani</a>
