@@ -1,5 +1,5 @@
 # VIAsegura
-[![Downloads](https://pepy.tech/badge/viasegura)]
+![Downloads](https://pepy.tech/badge/viasegura)
 
 ## Project Description
 ---
