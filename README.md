@@ -144,4 +144,5 @@ You can modify the devices used according to the TensorFlow documentation regard
 This package has been developed by:
 
 <a href="https://github.com/J0s3M4rqu3z" target="blank">Jose Maria Marquez Blanco</a>
+<br/>
 <a href="https://www.linkedin.com/in/joancerretani/" target="blank">Joan Alberto Cerretani</a>
