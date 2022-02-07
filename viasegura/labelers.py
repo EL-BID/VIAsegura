@@ -144,7 +144,7 @@ class ModelLabeler(Preprocess):
 		self.downloader = Downloader()
 		self.downloader.check_artifacts()
 		self.model_filter = model_filter
-		self.system_path = system_path
+		self.system_path = Path(system_path)
 		self.config_path = self.system_path / Path(config_path)
 		self.model_type = model_type
 		self.device = device
@@ -188,9 +188,9 @@ class ModelLabeler(Preprocess):
 		self.thresholds = {}
 		self.model_class = {}
 		for model in self.models:
-			if not self.downloader.check_files(self.system_path+self.models_route+model+'.json'):
+			if not self.downloader.check_files(self.system_path / self.models_route / (model+'.json')):
 				raise ImportError(f'The artifacts for the model {model} are not present use viasegura.download_models function to download them propertly')
-			model_config = self.read_json(self.system_path / self.models_route / Path(model+'.json'))
+			model_config = self.read_json(self.system_path / self.models_route / (model+'.json'))
 			self.classes[model] = model_config['classes']
 			self.classes[model] = {int(k):v for k,v in self.classes[model].items()}
 			self.thresholds[model] = model_config['thresholds']
