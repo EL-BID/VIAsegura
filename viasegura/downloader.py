@@ -13,7 +13,7 @@ models_url = 'https://via-segura-artifacts.s3.amazonaws.com/models.tar.gz'
 
 class Downloader:
 
-	def __init__(self, models_path = viasegura_path / 'models'):
+	def __init__(self, models_path = viasegura_path / 'models'/ 'models_artifacts'):
 		"""
 		This class allows to download de models and other model data from the Inter-American Development Bank repositories
 		
