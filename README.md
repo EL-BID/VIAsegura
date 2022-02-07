@@ -1,6 +1,7 @@
-[![Analytics](https://gabeacon.irvinlim.com/UA-4677001-16/VIAsegura/readme?useReferer)](https://github.com/EL-BID/VIAsegura)
 [![Downloads](https://pepy.tech/badge/viasegura)](https://pepy.tech/project/viasegura)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=EL-BID_VIAsegura&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EL-BID_VIAsegura)
+![analytics image (flat)](https://raw.githubusercontent.com/vitr/google-analytics-beacon/master/static/badge-flat.gif)
+![analytics](https://www.google-analytics.com/collect?v=1&cid=555&t=pageview&ec=repo&ea=open&dp=/VIAsegura/readme&dt=&tid=UA-4677001-16)
 <h1 align="center"> VIAsegura</h1>
 
 ## Content Table:
