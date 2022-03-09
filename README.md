@@ -84,7 +84,7 @@ download_models(aws_access_key = <aws_access_key>, signature = <signature>, expi
 ```
 
 
-To obtain the corresponding credentials for downloading the models, please contact the Inter-American Development Bank.
+To obtain the corresponding credentials for downloading the models, please contact the Inter-American Development Bank throw the mail infradigital@iadb.org
 
 You can also clone the repository but remember that the package is configured to download the models and place them in the root of the environment. You can change the locations manually as follows
 
