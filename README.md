@@ -39,12 +39,12 @@ So far, 15 models compatible with the iRAP labeling specifications have been dev
 | upgrade cost           | Influence surroundings on cost of major works | Frontal       | 3       |
 | speed management       | Presence of features to reduce operating speed| Frontal       | 3       |
 | bicycle facility       | Presence of facilities for bicyclists         | Frontal       | 2       |
-| quality of curve       | Influence surroundings on cost of major works | Frontal       | 2       |
-| vehicle parking        | Influence surroundings on cost of major works | Frontal       | 2       |
-| property access points | Influence surroundings on cost of major works | Frontal       | 2       |
-| area_type              | Influence surroundings on cost of major works | Lateral       | 2       |
-| land use               | Influence surroundings on cost of major works | Lateral       | 4       |
-| number of lanes        | Influence surroundings on cost of major works | Frontal       | 5       |
+| quality of curve       | How adecuate is the curve                     | Frontal       | 2       |
+| vehicle parking        | Presence of parking on the road               | Frontal       | 2       |
+| property access points | Detects access to properties                  | Frontal       | 2       |
+| area_type              | Detects if there is an urban or rural area    | Lateral       | 2       |
+| land use               | Describes the use of the land surrounding the road | Lateral       | 4       |
+| number of lanes        | The numebr of lanes detected                  | Frontal       | 5       |
 
 Some of the models can identify all the classes or categories, others can help you sort through the available options.
 
