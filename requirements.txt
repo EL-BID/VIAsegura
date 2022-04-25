@@ -1,4 +1,5 @@
 tensorflow-gpu==2.6.0
+keras==2.6.0
 tqdm
 opencv-contrib-python>=4.2.0.34
 boto3>=1.14.37'

@@ -16,7 +16,7 @@ class Preprocess:
 		pass
 
 
-	def get_image_groups(self, images):
+	def get_image_groups(self, images, batch_size = 32):
 		"""
 		Generatethe grouped images for the model
 
@@ -33,7 +33,11 @@ class Preprocess:
 			numpy array of the images with the corresponding dimensions and size \
 			to input the model (n_groups, 5, width, deepth, channels)
 		"""
-		images = tf.image.resize(images, (256, 256)).numpy()
+		imgs = []
+		for offset in range(0, images.shape[0], batch_size):
+			imgs.append(tf.image.resize(images[offset:offset+batch_size], (256, 256)).numpy())
+		images = np.concatenate(imgs)
+		# images = tf.image.resize(images, (256, 256)).numpy()
 		quantity = len(images)
 		group_samples = len(images)//5
 		images_groups = images[:group_samples*5].reshape((group_samples, 5)+images.shape[1:])

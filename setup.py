@@ -3,7 +3,7 @@ import pkg_resources
 from pathlib import Path
 
 this_directory = Path(__file__).parent
-VERSION = '0.0.1.37' 
+VERSION = '0.0.1.38' 
 DESCRIPTION = 'A python package to interact with Inter-American Development Bank machine learning models to automatic label elements for iRAP certification'
 
 LONG_DESCRIPTION = (this_directory / "README.md").read_text()
