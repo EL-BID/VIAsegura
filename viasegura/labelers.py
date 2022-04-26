@@ -490,12 +490,12 @@ class LanesLabeler(Preprocess):
 		"""
 
 		mask_images = []
-		for offset in range(0,images.shape[0],batch_size):
+		for offset in tqdm(range(0,images.shape[0],batch_size)):
 			mask_images.append(self.get_mask_images(images[offset:offset+batch_size]))
 		mask_images = np.concatenate(mask_images)
 		if self.verbose ==0:
 			print('Mask images generated sucessfully')
-		return self.labeler.get_labels(mask_images)
+		return self.labeler.get_labels(mask_images, batch_size = batch_size)
 	
 	def get_mask_images(self, images):
 
