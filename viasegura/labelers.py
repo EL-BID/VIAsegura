@@ -464,7 +464,7 @@ class LanesLabeler(Preprocess):
 		with tf.device(self.lanenet_device):
 			if not self.downloader.check_files(self.system_path / self.models_route / 'lanenet.h5'):
 				raise ImportError("The artifacts for the model lanenet are not present use viasegura.download_models function to download them propertly")
-			self.lanenet = tf.keras.models.load_model(self.system_path+self.models_route+'lanenet.h5', custom_objects={ 'loss_instance': loss_instance })
+			self.lanenet = tf.keras.models.load_model(self.system_path/self.models_route/'lanenet.h5', custom_objects={ 'loss_instance': loss_instance })
 	
 	def get_labels(self,images, batch_size = 4):
 		"""
