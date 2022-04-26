@@ -450,7 +450,7 @@ class LanesLabeler(Preprocess):
 		to the masked iamges are on the ModelLabeler instance inside the LanesLabeler with its own configuration file
 
 		"""
-		config = self.read_json(self.system_path+self.CONFIG_PATH)
+		config = self.read_json(self.system_path / self.CONFIG_PATH)
 		self.models_route = Path(config['paths']['models_route_lanenet'])
 		self.img_shape = tuple([int(n) for n in config['lanenet']['input_shape']]) 
 	
