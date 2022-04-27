@@ -152,7 +152,7 @@ from viasegura import ModelLabeler
 frontal_labeler = ModelLabeler('frontal', device='/device:GPU:0') 
 ```
 
-You can see and entire example of use on [this link](https://colab.research.google.com/drive/1WltAaCCOnREcuLzI3PX_IKsnHNuRttEz#scrollTo=VxgzRtipckTX).
+You can see and entire example of use on [this link](https://colab.research.google.com/drive/1WltAaCCOnREcuLzI3PX_IKsnHNuRttEz?usp=sharing).
 
 Also make sure to see the [manual](https://github.com/EL-BID/VIAsegura/tree/main/viasegura/manuals) to understand the scope of the project and how to make a project from scratch using the viasegura models.
 
