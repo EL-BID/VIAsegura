@@ -11,6 +11,7 @@
 - [Main Features](#main-features)
 - [Installation](#installation)
 - [Using the Models](#using-the-models)
+- [User's guides](#user-guide)
 - [Autores](#autores)
 - [License](#license)
 
@@ -151,6 +152,7 @@ from viasegura import ModelLabeler
 
 frontal_labeler = ModelLabeler('frontal', device='/device:GPU:0') 
 ```
+## User Guide
 
 You can see and entire example of use on [this link](https://colab.research.google.com/drive/1WltAaCCOnREcuLzI3PX_IKsnHNuRttEz?usp=sharing).
 
