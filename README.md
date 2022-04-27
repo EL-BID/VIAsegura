@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 [![Downloads](https://pepy.tech/badge/viasegura)](https://pepy.tech/project/viasegura)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=EL-BID_VIAsegura&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EL-BID_VIAsegura)
 ![analytics image (flat)](https://raw.githubusercontent.com/vitr/google-analytics-beacon/master/static/badge-flat.gif)
@@ -348,4 +347,3 @@ This package has been developed by:
 ## License
 
 The distribution of this software is according with the following [license](https://github.com/EL-BID/VIAsegura/blob/main/LICENSE.md)
->>>>>>> 2e375ea681f0971ac93b1519d9cb83e4a4897932
