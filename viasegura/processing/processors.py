@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 import pandas as pd
 import numpy as np
-import cv2
 from viasegura.labelers import ModelLabeler, LanesLabeler
 import tensorflow as tf
 from tqdm.autonotebook import tqdm

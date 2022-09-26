@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 import pandas as pd
 import numpy as np
-import cv2
 from viasegura.processing.img_sources import Image_Source_Loader
 from viasegura.processing.gps_sources import GPS_Data_Loader
 import tensorflow as tf
