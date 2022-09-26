@@ -173,16 +173,6 @@ def instance_segmentation_branch(x_in, embed_dim):
 	x = layers.Conv2D(filters=embed_dim, kernel_size=(1,1), strides=1, padding='same',name='instance' )(x)
 	return x
 
-# def binary_segmentation_branch(x_in, num_classes):
-# 	x = detail_conv2d(x_in,64)
-# 	x = detail_conv2d(x_in,128,k=1)
-# 	x = layers.Conv2D(filters=num_classes, kernel_size=(1,1), strides=1, padding='same')(x)
-# 	x = layers.UpSampling2D((8,8), interpolation='bilinear')(x)
-# 	x = layers.Activation('softmax')(x)
-# 	x = tf.argmax(x,axis=3)	
-# 	return x
-
-
 def binary_segmentation_branch(x_in, num_classes):
 	x = detail_conv2d(x_in,64)
 	x = detail_conv2d(x_in,128,k=1)

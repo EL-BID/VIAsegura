@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 from viasegura.utils.lanenet import loss_instance
 from viasegura.downloader import Downloader
-from tqdm import tqdm
+from tqdm.autonotebook import tqdm
 from pathlib import Path
 
 viasegura_path = Path(__file__).parent
@@ -314,9 +314,9 @@ class ModelLabeler(Preprocess):
 			values with the probability to belong for all of the clases
 		"""
 		pred = [[] for _ in self.models]
-		for offset in tqdm(range(0,images.shape[0],batch_size)):
+		for offset in range(0,images.shape[0],batch_size):
 			with tf.device(self.device):
-				batch_pred = self.model.predict(images[offset:offset+batch_size])
+				batch_pred = self.model.predict(images[offset:offset+batch_size], verbose = self.verbose)
 				if len(self.models) == 1:
 					batch_pred = [batch_pred]
 					
@@ -406,10 +406,10 @@ class LanesLabeler(Preprocess):
 			The route to the file which contains the configuration of the package. To change it you must have a diferent config file. If you don't have an specific use case for change this option use Default
 
 
-		verbose: int (default 0)
+		verbose: int (default 1)
 			Select the level of string information you want to be printed on the screen while running the process
-			0: All the information
-			Any other: No printing
+			1: All the information
+			0: No printing
 
 		Properties 
 		----------
@@ -494,10 +494,10 @@ class LanesLabeler(Preprocess):
 		"""
 
 		mask_images = []
-		for offset in tqdm(range(0,images.shape[0],batch_size)):
+		for offset in range(0,images.shape[0],batch_size):
 			mask_images.append(self.get_mask_images(images[offset:offset+batch_size]))
 		mask_images = np.concatenate(mask_images)
-		if self.verbose ==0:
+		if self.verbose ==1:
 			print('Mask images generated sucessfully')
 		return self.labeler.get_labels(mask_images, batch_size = batch_size)
 	
@@ -521,7 +521,7 @@ class LanesLabeler(Preprocess):
 		"""
 		images = tf.image.resize(images, self.img_shape[:2]).numpy()/255.0
 		with tf.device(self.lanenet_device):
-			pred = self.lanenet.predict(images)
+			pred = self.lanenet.predict(images, verbose = self.verbose)
 		binary_images = pred[0]
 		binary_processed_images = np.array(list(map(lambda bin_img: self._postprocess(bin_img), binary_images)))
 		transformed_images = (images.copy()*255).astype('uint8')
