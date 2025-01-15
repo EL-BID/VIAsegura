@@ -132,5 +132,4 @@ dmypy.json
 .idea/
 
 *.tar.gz
-
-models/
+models/models_artifacts
