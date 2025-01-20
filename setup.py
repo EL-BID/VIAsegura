@@ -4,7 +4,7 @@ import pkg_resources
 from setuptools import find_packages, setup
 
 this_directory = Path(__file__).parent
-VERSION = "1.0"
+VERSION = "2.0-0-dev1"
 DESCRIPTION = (
     "A python package to interact with Inter-American Development Bank machine learning models to automatic "
     "label elements for iRAP certification"
@@ -30,9 +30,13 @@ setup(
     keywords=["Machine Learning", "safe road"],
     classifiers=[
         "Development Status :: 3 - Alpha",
-        "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
     ],
     python_requires=">=3.9",
     include_package_data=True,
