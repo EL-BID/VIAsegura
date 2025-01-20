@@ -155,7 +155,7 @@ class ModelLabeler(Preprocess):
             Receive the scores of the groups and determines the final class
         """
         self.system_path = Path(system_path)
-        self.config_path = DEFAULT_CONFIG_PATH/ Path(config_path)
+        self.config_path = DEFAULT_CONFIG_PATH / Path(config_path)
 
         self.downloader = Downloader(self.system_path / "models" / "models_artifacts")
         self.downloader.check_artifacts()
@@ -467,7 +467,9 @@ class LanesLabeler(Preprocess):
 
         self.load_config()
         self.load_lanenet_model()
-        self.labeler = ModelLabeler(system_path=system_path, model_type="frontal", device=self.models_device, config_path=viasegura_path / "lanenet_config.json")
+        self.labeler = ModelLabeler(
+            system_path=system_path, model_type="frontal", device=self.models_device, config_path=viasegura_path / "lanenet_config.json"
+        )
         if self.verbose == 0:
             print("Lanenet model loaded successfully")
 
