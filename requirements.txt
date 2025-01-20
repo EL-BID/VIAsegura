@@ -10,7 +10,3 @@ numpy<2.0.0
 pynmea2>=1.15.0
 shapely
 Pillow==9.3.0
-geopandas
-matplotlib
-plotly
-ipywidgets

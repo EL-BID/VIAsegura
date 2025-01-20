@@ -133,3 +133,4 @@ dmypy.json
 
 *.tar.gz
 models/models_artifacts
+notebooks/files/
