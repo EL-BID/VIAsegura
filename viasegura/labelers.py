@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
+from viasegura.configs.utils import DEFAULT_CONFIG_PATH
 from viasegura.downloader import Downloader
 from viasegura.utils.lanenet import loss_instance
 
@@ -154,9 +155,9 @@ class ModelLabeler(Preprocess):
             Receive the scores of the groups and determines the final class
         """
         self.system_path = Path(system_path)
-        self.config_path = self.system_path / Path(config_path)
+        self.config_path = DEFAULT_CONFIG_PATH/ Path(config_path)
 
-        self.downloader = Downloader()
+        self.downloader = Downloader(self.system_path / "models" / "models_artifacts")
         self.downloader.check_artifacts()
 
         self.model_filter = model_filter
@@ -456,16 +457,17 @@ class LanesLabeler(Preprocess):
             Receive the iamges and transform them into masked images
 
         """
-
-        self.verbose = verbose
-        self.downloader = Downloader()
-        self.downloader.check_artifacts()
-        self.system_path = system_path
         self.lanenet_device = lanenet_device
         self.models_device = models_device
+        self.system_path = Path(system_path)
+        self.verbose = verbose
+
+        self.downloader = Downloader(self.system_path / "models" / "models_artifacts")
+        self.downloader.check_artifacts()
+
         self.load_config()
         self.load_lanenet_model()
-        self.labeler = ModelLabeler(model_type="frontal", device=self.models_device, config_path=viasegura_path / "lanenet_config.json")
+        self.labeler = ModelLabeler(system_path=system_path, model_type="frontal", device=self.models_device, config_path=viasegura_path / "lanenet_config.json")
         if self.verbose == 0:
             print("Lanenet model loaded successfully")
 
@@ -476,7 +478,7 @@ class LanesLabeler(Preprocess):
         to the masked iamges are on the ModelLabeler instance inside the LanesLabeler with its own configuration file
 
         """
-        config = self.read_json(self.system_path / self.CONFIG_PATH)
+        config = self.read_json(DEFAULT_CONFIG_PATH / self.CONFIG_PATH)
         self.models_route = Path(config["paths"]["models_route_lanenet"])
         self.img_shape = tuple([int(n) for n in config["lanenet"]["input_shape"]])
 
