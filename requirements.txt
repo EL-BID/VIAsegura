@@ -1,5 +1,5 @@
-tensorflow<2.15.0
-keras<2.15.0
+tensorflow<=2.16.1
+keras<=2.16.1
 tqdm
 boto3>=1.14.37
 opencv-python>=4.2.0.34
