@@ -1,7 +1,7 @@
 # ## Viasegura
 
 import os
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 from pathlib import Path
 import json
 
@@ -15,7 +15,6 @@ import numpy as np
 import tensorflow as tf
 
 ### graphics
-import matplotlib.pyplot as plt
 from shapely.geometry import LineString, MultiLineString
 from shapely.ops import linemerge
 import geopandas as gpd
