@@ -132,4 +132,5 @@ dmypy.json
 .idea/
 
 models/models_artifacts
-notebooks/files/
+notebooks/outputs/*.csv
+*.tar.gz

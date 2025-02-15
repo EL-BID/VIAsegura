@@ -5,11 +5,13 @@ from pathlib import Path
 DEFAULT_CONFIG_PATH = Path(__file__).parent
 
 
-def setup_logging(level=logging.DEBUG):
-    """Setup logging.
+def setup_logging(level: int = logging.DEBUG) -> None:
+    """Sets up the logging.
+
+    The logging level can be set to change the verbosity of the output.
 
     Args:
-        level: The logging level to use.
+        level: The logging level to use. Defaults to logging.DEBUG.
 
     Returns:
         None
@@ -25,7 +27,18 @@ def setup_logging(level=logging.DEBUG):
     )
 
 
-def update(d, u):
+def update(d: dict, u: dict) -> dict:
+    """Recursively updates a dictionary.
+
+    The update dictionary is merged into the target dictionary.
+
+    Args:
+        d: The target dictionary.
+        u: The update dictionary.
+
+    Returns:
+        The updated target dictionary.
+    """
     for k, v in u.items():
         if isinstance(d, dict):
             if isinstance(v, dict):
@@ -39,7 +52,19 @@ def update(d, u):
 
 
 class Config_Basic:
+    """Basic configuration class.
+
+    Attributes:
+        config (dict): The loaded configuration.
+    """
+
     def __init__(self):
+        """Initializes the configuration class.
+
+        Args:
+            config_file (Path): The path to the configuration file.
+            config_file_update (Path): The path to the updated configuration file.
+        """
         self.config = None
 
     def load_config(self, config_file: Path, config_file_update: Path = None) -> None:
@@ -47,7 +72,7 @@ class Config_Basic:
 
         Args:
             config_file (Path): The path to the configuration file.
-            config_file_update (Path: The path to the updated configuration file.
+            config_file_update (Path): The path to the updated configuration file.
 
         Returns:
             None

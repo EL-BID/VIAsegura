@@ -12,9 +12,8 @@ from scipy.interpolate import interp1d
 from shapely.geometry import LineString
 from tqdm import tqdm
 
-from viasegura.analyzers.utils import total_distance
 from viasegura.processing.exceptions import InvalidGPSData
-from viasegura.processing.utils import decimal_coords
+from viasegura.processing.utils import decimal_coords, total_distance
 
 logger = logging.getLogger(__name__)
 
