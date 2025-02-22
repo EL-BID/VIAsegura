@@ -1,2 +1,3 @@
-include viasegura_test/config.json
-include viasegura_test/lanenet_config.json
+include viasegura/configs/config.json
+include viasegura/images_processor.json
+include viasegura/lanenet_config.json
