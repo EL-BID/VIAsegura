@@ -4,7 +4,7 @@ import pkg_resources
 from setuptools import find_packages, setup
 
 this_directory = Path(__file__).parent
-VERSION = "2.0.0-dev6"
+VERSION = "2.0.0-dev7"
 DESCRIPTION = (
     "A python package to interact with Inter-American Development Bank machine learning models to automatic "
     "label elements for iRAP certification"
