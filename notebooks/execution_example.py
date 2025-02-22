@@ -7,11 +7,7 @@ import tempfile
 from pathlib import Path
 
 import geopandas as gpd
-
-# graphics
 import numpy as np
-
-# Analyze
 import pandas as pd
 import plotly.express as px
 import tensorflow as tf
