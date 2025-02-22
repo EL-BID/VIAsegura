@@ -1,8 +1,13 @@
+import logging
+
 import numpy as np
 import tensorflow as tf
 from tqdm.autonotebook import tqdm
 
+from viasegura.configs.config import DEFAULT_DEVICE_CPU
 from viasegura.labelers import LanesLabeler, ModelLabeler
+
+logger = logging.getLogger(__name__)
 
 
 class Images_Labeler:
@@ -12,9 +17,9 @@ class Images_Labeler:
         assign_devices=False,
         gpu_enabled=False,
         total_mem=6144,
-        frontal_device="/device:CPU:0",
-        lanes_device_sep="/device:CPU:0",
-        lanes_device_models="/device:CPU:0",
+        frontal_device=DEFAULT_DEVICE_CPU,
+        lanes_device_sep=DEFAULT_DEVICE_CPU,
+        lanes_device_models=DEFAULT_DEVICE_CPU,
         artifacts_path=None,
     ):
 
@@ -27,9 +32,9 @@ class Images_Labeler:
             if gpu_enabled:
                 self.assign_gpu_devices(total_mem)
             else:
-                self.frontal_device = "/device:CPU:0"
-                self.lanes_device_sep = "/device:CPU:0"
-                self.lanes_device_models = "/device:CPU:0"
+                self.frontal_device = DEFAULT_DEVICE_CPU
+                self.lanes_device_sep = DEFAULT_DEVICE_CPU
+                self.lanes_device_models = DEFAULT_DEVICE_CPU
         else:
             self.frontal_device = frontal_device
             self.lanes_device_sep = lanes_device_sep
@@ -61,21 +66,21 @@ class Images_Labeler:
             d[k] = v
         return d
 
-    def _get_total_dicts(self, raw_predictions, numeric_class, clasification, prediction):
+    def _get_total_dicts(self, raw_predictions, numeric_class, classification, prediction):
         raw_predictions = self._get_dict(raw_predictions, prediction["raw_predictions"])
         numeric_class = self._get_dict(numeric_class, prediction["numeric_class"])
-        clasification = self._get_dict(clasification, prediction["clasification"])
-        return raw_predictions, numeric_class, clasification
+        classification = self._get_dict(classification, prediction["classification"])
+        return raw_predictions, numeric_class, classification
 
     def _get_dict_mult(self, d1, d2):
         for k in d1.keys():
             d1[k] = np.concatenate([np.array(d1[k]), np.array(d2[k])])
         return d1
 
-    def _get_total_dicts_mult(self, r_p, n_c, cl, raw_predictions, numeric_class, clasification):
+    def _get_total_dicts_mult(self, r_p, n_c, cl, raw_predictions, numeric_class, classification):
         r_p = self._get_dict_mult(r_p, raw_predictions)
         n_c = self._get_dict_mult(n_c, numeric_class)
-        cl = self._get_dict_mult(cl, clasification)
+        cl = self._get_dict_mult(cl, classification)
         return r_p, n_c, cl
 
     def get_labels(self, img_obj, batch_size=5):
@@ -84,18 +89,18 @@ class Images_Labeler:
         for offset in tqdm(range(0, img_obj.get_len_sel(), batch_size * 5)):
             raw_predictions = {}
             numeric_class = {}
-            clasification = {}
+            classification = {}
             img_batch = img_obj.get_batch_sel(offset, batch_size * 5)
             prediction_frontal = self.frontal_model.get_labels(img_batch, batch_size=batch_size)
-            raw_predictions, numeric_class, clasification = self._get_total_dicts(
-                raw_predictions, numeric_class, clasification, prediction_frontal
+            raw_predictions, numeric_class, classification = self._get_total_dicts(
+                raw_predictions, numeric_class, classification, prediction_frontal
             )
             prediction_lanes = self.lanes_labeler.get_labels(img_batch, batch_size=batch_size)
-            raw_predictions, numeric_class, clasification = self._get_total_dicts(
-                raw_predictions, numeric_class, clasification, prediction_lanes
+            raw_predictions, numeric_class, classification = self._get_total_dicts(
+                raw_predictions, numeric_class, classification, prediction_lanes
             )
             if r_p is None:
-                r_p, n_c, cl = raw_predictions, numeric_class, clasification
+                r_p, n_c, cl = raw_predictions, numeric_class, classification
             else:
-                r_p, n_c, cl = self._get_total_dicts_mult(r_p, n_c, cl, raw_predictions, numeric_class, clasification)
+                r_p, n_c, cl = self._get_total_dicts_mult(r_p, n_c, cl, raw_predictions, numeric_class, classification)
         return r_p, n_c, cl

@@ -3,18 +3,23 @@ import logging
 from pathlib import Path
 
 DEFAULT_CONFIG_PATH = Path(__file__).parent
+DEFAULT_CONFIG_FILE = "config.json"
+DEFAULT_CONFIG_LANENET_FILE = "lanenet_config.json"
+DEFAULT_DEVICE_CPU = "/device:CPU:0"
+DEFAULT_DEVICE_GPU = "/device:GPU:0"
 
 
 def setup_logging(level: int = logging.DEBUG) -> None:
-    """Sets up the logging.
-
-    The logging level can be set to change the verbosity of the output.
+    """Sets up the logging module.
 
     Args:
-        level: The logging level to use. Defaults to logging.DEBUG.
+        level: The logging level. Defaults to logging.DEBUG.
 
-    Returns:
-        None
+    Notes:
+        The logging format is different depending on the level. If the level is
+        logging.INFO, the logging format is "%(asctime)s - %(levelname)s -
+        %(message)s". Otherwise, the logging format is
+        "%(asctime)s - %(levelname)s - %(name)s - %(message)s".
     """
     format = (
         "%(asctime)s - %(levelname)s - %(message)s" if level == logging.INFO else "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
@@ -42,8 +47,7 @@ def update(d: dict, u: dict) -> dict:
     for k, v in u.items():
         if isinstance(d, dict):
             if isinstance(v, dict):
-                r = update(d.get(k, {}), v)
-                d[k] = r
+                d[k] = update(d.get(k, {}), v)
             else:
                 d[k] = u[k]
         else:
@@ -59,12 +63,7 @@ class Config_Basic:
     """
 
     def __init__(self):
-        """Initializes the configuration class.
-
-        Args:
-            config_file (Path): The path to the configuration file.
-            config_file_update (Path): The path to the updated configuration file.
-        """
+        """Initializes the configuration class."""
         self.config = None
 
     def load_config(self, config_file: Path, config_file_update: Path = None) -> None:

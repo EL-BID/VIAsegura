@@ -9,7 +9,6 @@ from pathlib import Path
 import geopandas as gpd
 
 # graphics
-import matplotlib.pyplot as plt
 import numpy as np
 
 # Analyze
@@ -134,19 +133,9 @@ archives_frontal = sorted(os.listdir(master_input_frontal))
 archives_frontal_paths = [master_input_frontal / item for item in archives_frontal]
 frontal_images = load_image(archives_frontal_paths)
 
-g = 0
-for i in range(5):
-    plt.imshow(frontal_images[(g * 5) + i])
-    plt.show()
-
 archives_lateral = sorted(os.listdir(master_input_lateral))
 archives_lateral_paths = [master_input_lateral / item for item in archives_lateral]
 lateral_images = load_image(archives_lateral_paths)
-
-g = 0
-for i in range(5):
-    plt.imshow(lateral_images[(g * 5) + i])
-    plt.show()
 
 number_groups = frontal_images.shape[0] // 5 + (1 if (frontal_images.shape[0] % 5) > 0 else 0)
 print(f"El numero de grupos es de {number_groups}")
@@ -176,13 +165,13 @@ lateral_results = laterallabeler.get_labels(lateral_images, batch_size=BATCH_SIZ
 
 frontal_results.keys()
 
-laterallabeler.classes
+print(laterallabeler.classes)
 
-frontal_results["clasification"]
+print(frontal_results["classification"])
 
 # Resultados
-results_df = pd.concat([pd.DataFrame(result["clasification"]) for result in [frontal_results, lateral_results, lanes_results]], axis=1)
-results_df
+results_df = pd.concat([pd.DataFrame(result["classification"]) for result in [frontal_results, lateral_results, lanes_results]], axis=1)
+print(results_df)
 
 # Recoleccion de datos GPS
 gps_data = pd.read_csv(gps_data_route, sep=";", decimal=",")
@@ -190,9 +179,9 @@ gps_data["image_number"] = list(map(lambda x: int(x.split(".")[0].split("_")[0])
 gps_data["group"] = list(map(lambda x: (x - 1) // 5, gps_data["image_number"]))
 gps_data = gps_data.groupby(["group"]).aggregate({"latitud": ["first", "last"], "longitud": ["first", "last"]}).reset_index()
 gps_data.columns = [col[0] if col[1] == "" else f"{col[0]}_{col[1]}" for col in gps_data.columns]
-gps_data
+print(gps_data)
 
 results_df = pd.concat([gps_data, results_df], axis=1)
 results_df.to_csv("outputs/results_example.csv", sep="|", decimal=".")
 
-results_df
+print(results_df)

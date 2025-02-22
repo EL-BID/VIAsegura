@@ -1,16 +1,22 @@
 import json
+import logging
 from pathlib import Path
 
 import cv2
 import numpy as np
 import tensorflow as tf
 
-from viasegura.configs.utils import DEFAULT_CONFIG_PATH
+from viasegura import VIASEGURA_PATH
+from viasegura.configs.config import (
+    DEFAULT_CONFIG_FILE,
+    DEFAULT_CONFIG_LANENET_FILE,
+    DEFAULT_CONFIG_PATH,
+    DEFAULT_DEVICE_CPU,
+)
 from viasegura.downloader import Downloader
 from viasegura.utils.lanenet import loss_instance
 
-viasegura_path = Path(__file__).parent
-DEFAULT_DEVICE = "/device:CPU:0"
+logger = logging.getLogger(__name__)
 
 
 class Preprocess:
@@ -31,6 +37,8 @@ class Preprocess:
         images: np.array[int]
             numpy array of the images, the images must be on the same size \
             The dimension of the matrix must be (n_images,width, deepth, channels)
+        batch_size: int (default 32)
+            Number of groups of images that can be scored at the same time.
 
         Returns
         ----------
@@ -73,6 +81,15 @@ class Preprocess:
         return np.expand_dims(images[selected, :], axis=0)
 
     def read_json(self, file):
+        """
+        Read a json file and return a dictionary with the configuration.
+
+        Args:
+            file (str): The path to the json file.
+
+        Returns:
+            dict: A dictionary with the configuration.
+        """
         with open(file, "r") as f:
             config = json.loads(f.read())
         return config
@@ -84,9 +101,9 @@ class ModelLabeler(Preprocess):
         self,
         model_type="frontal",
         model_filter=None,
-        device=DEFAULT_DEVICE,
-        config_path="config.json",
-        system_path=viasegura_path,
+        device=DEFAULT_DEVICE_CPU,
+        config_path=DEFAULT_CONFIG_FILE,
+        system_path=VIASEGURA_PATH,
         verbose=0,
     ):
         """
@@ -101,20 +118,17 @@ class ModelLabeler(Preprocess):
 
         model_filter: list[] str (default None)
             List with the models that will be used on the instance of the labeler. If this is None then it will use
-            all of the same ModelType.
+            all the same ModelType.
             Example: ['delineation','carriageway','street_lighting']
 
-        config_path: str (default recomended 'config.json')
+        config_path: str (default recommended 'config.json')
             The route to the file which contains the configuration of the package. To change it you must have a
-            diferent config file. If you don't have an specific use case for change this option use Default
+            different config file. If you don't have an specific use case for change this option use Default
 
-        system path: str (default Library instalation path)
+        system path: str (default Library installation path)
             The route to the config file and to the artifacts that will be used by the labeler. This is the route
             where the models will be load from. In this route must be the config file as well. If you don't have and
             specific use case for this use Default.
-
-        config_path type: str
-            The route to the config file of the model
 
         device: str (default '/device:CPU:0')
             The name of the device that will be running the models.
@@ -122,7 +136,7 @@ class ModelLabeler(Preprocess):
             '/device:GPU:0' if you have 1 GPU available and one to use all its resources
             If you have more than one GPU, you can select the number of the device, also \
             you can use it's power combined or reduce the resources of the GPU you want to use.\
-            To do so reffer to the tensorflow documentation on https://www.tensorflow.org/guide/gpu
+            To do so refer to the tensorflow documentation on https://www.tensorflow.org/guide/gpu
 
         verbose: int (default 0)
             Select the level of string information you want to be printed on the screen while running the process
@@ -140,7 +154,7 @@ class ModelLabeler(Preprocess):
         thresholds: dict
             Specific thresholds for each model loaded on the instance
 
-        model: tensorflow.python.keras.engine.functional.Functinal
+        model: tensorflow.python.keras.engine.functional.Functional
             Object with the model in charge to calculate the scores for the images for each submodel
 
         Methods
@@ -166,17 +180,16 @@ class ModelLabeler(Preprocess):
         self.verbose = verbose
         self._load_config(self.config_path)
         if self.verbose == 0:
-            print("Configuration Loaded")
+            logger.info("Configuration Loaded")
         self._load_multi_model()
         if self.verbose == 0:
-            print(f'You have succesfully load {len(self.models)} models on the category "{self.model_type}"')
+            logger.info(f'You have successfully load {len(self.models)} models on the category "{self.model_type}"')
 
     def _load_config(self, config_path):
         """
         Function to load data and parameters from the models
-        They can be frontal models (when the image is in the front of the vehicule) \
+        They can be frontal models (when the image is in the front of the vehicle) \
         or lateral model (when the camera was pointed to the lateral of the vehicle)
-
 
         Parameters
         ----------
@@ -205,9 +218,7 @@ class ModelLabeler(Preprocess):
         self.model_class = {}
         for model in self.models:
             if not self.downloader.check_files(self.system_path / self.models_route / (model + ".json")):
-                raise ImportError(
-                    f"The artifacts for the model {model} are not present use viasegura.download_models function to download them propertly"
-                )
+                raise ImportError(f"The artifacts for the model {model} are not present.")
             model_config = self.read_json(self.system_path / self.models_route / (model + ".json"))
             self.classes[model] = model_config["classes"]
             self.classes[model] = {int(k): v for k, v in self.classes[model].items()}
@@ -239,11 +250,8 @@ class ModelLabeler(Preprocess):
                 Model Type object
         """
         with tf.device(self.device):
-            if not self.downloader.check_files(self.system_path / model_route):
-                raise ImportError(
-                    f"The artifacts for the model {model_name} are not present use viasegura.download_models function "
-                    + "to download them properly"
-                )
+            if not self.downloader.check_files(str(self.system_path / model_route)):
+                raise ImportError(f"The artifacts for the model {model_name} are not present")
             model = tf.keras.models.load_model(self.system_path / model_route)
             input_m = tf.keras.layers.Input((5, 256, 256, 3))
             output = model(input_m)
@@ -263,9 +271,9 @@ class ModelLabeler(Preprocess):
             input_model = tf.keras.layers.Input((5, 256, 256, 3))
             models_artifacts = []
             for m in self.models:
-                models_artifacts.append(self._load_single_model(self.models_route / Path(m + ".h5"), m))
+                models_artifacts.append(self._load_single_model(str(self.models_route / Path(m + ".h5")), m))
                 if self.verbose == 0:
-                    print(f'Loaded model "{m}"')
+                    logger.info(f'Loaded model "{m}"')
             outputs = []
             for m in models_artifacts:
                 outputs.append(m(input_model))
@@ -283,16 +291,16 @@ class ModelLabeler(Preprocess):
             Number of groups of images that can be scored at the same time. This number can cause a problem on the
             execution depending on the resources available for scoring.
             When you have low number of models loaded you can increase the batch size, but if the number is high we
-            recomend (depending on the GPU and resources assigned to the model) to decrease this number.
+            recommend (depending on the GPU and resources assigned to the model) to decrease this number.
             The default value has been tested on a NVIDIA RTX2070 with no issues, so we recommend to use this number
             if you have a GPU with similar memory available
 
         Returns
         ----------
         dict[]
-        raw_predictions: probabilities to belong an especific class for each model
-        numeric_class: numeric class clasification taking under consideration the thresshold
-        clasification: class name result ofr every group of images on every model
+        raw_predictions: probabilities to belong an specific class for each model
+        numeric_class: numeric class classification taking under consideration the threshold
+        classification: class name result ofr every group of images on every model
 
         """
         if not isinstance(images, np.ndarray):
@@ -302,11 +310,11 @@ class ModelLabeler(Preprocess):
         images = self.get_image_groups(images) / 255.0
         predictions = self.get_raw_labels(images, batch_size=batch_size)
         results, class_results = self.get_discrete_value(predictions)
-        return {"raw_predictions": predictions, "numeric_class": results, "clasification": class_results}
+        return {"raw_predictions": predictions, "numeric_class": results, "classification": class_results}
 
     def get_raw_labels(self, images, batch_size=2):
         """
-        Scores the data points from the images using the diferent models inside \
+        Scores the data points from the images using the different models inside \
         the Model object
 
         Parameters
@@ -314,13 +322,13 @@ class ModelLabeler(Preprocess):
 
         images: np.array[int]
             numpy array of the images with the corresponding dimensions and size \
-        to input the model (n_groups , 5, width, deepth, channels)
+        to input the model (n_groups , 5, width, depth, channels)
 
         batch_size: int (default 2)
             Number of groups of images that can be scored at the same time. This number can cause a problem on the
             execution depending on the resources available for scoring.
             When you have low number of models loaded you can increase the batch size, but if the number is high we
-            recomend (depending on the GPU and resources assigned to the model) to decrease this number.
+            recommend (depending on the GPU and resources assigned to the model) to decrease this number.
             The default value has been tested on a NVIDIA RTX2070 with no issues, so we recommend to use this number
             if you have a GPU with similar memory available
 
@@ -329,7 +337,7 @@ class ModelLabeler(Preprocess):
         ----------
         dict[] np.array shape(n_groups,n_clases)
             A dictionary with the model name as key and an array of doubles as \
-            values with the probability to belong for all of the clases
+            values with the probability to belong for all the clases
         """
         pred = [[] for _ in self.models]
         for offset in range(0, images.shape[0], batch_size):
@@ -359,7 +367,7 @@ class ModelLabeler(Preprocess):
 
         predictions: dict[] np.array shape(n_groups,n_clases)
             A dictionary with the model name as key and an array of doubles as \
-            values with the probability to belong for all of the clases
+            values with the probability to belong for all the classes
 
         Returns
         ----------
@@ -391,15 +399,13 @@ class ModelLabeler(Preprocess):
 
 
 class LanesLabeler(Preprocess):
-    CONFIG_PATH = "config.json"
-
-    def __init__(self, lanenet_device=DEFAULT_DEVICE, models_device=DEFAULT_DEVICE, system_path=viasegura_path, verbose=0):
+    def __init__(self, lanenet_device=DEFAULT_DEVICE_CPU, models_device=DEFAULT_DEVICE_CPU, system_path=VIASEGURA_PATH, verbose=0):
         """
         This class allows to run models to identify iRAP elements based on the implementation of Lanenet model
         (which allows to identify the delineation marks that divide channels on the street)
         Lanenet model create a mask with the delineation of the streets and mask the original image to apply further
         models over it.
-        Based on the masked iamge, the object scores the groups images with models created for masked images based on
+        Based on the masked image, the object scores the groups images with models created for masked images based on
         the iRAP specifications.
         This model use 2 levels so it needs to specify 2 devices to run the models
 
@@ -412,9 +418,9 @@ class LanesLabeler(Preprocess):
             '/device:GPU:0' if you have 1 GPU available and one to use all its resources
             If you have more than one GPU, you can select the number of the device, also \
             you can use it's power combined or reduce the resources of the GPU you want to use.
-            It is recomended to use the logical gpus separation to run the models as explained on Tensorflow
+            It is recommended to use the logical gpus separation to run the models as explained on Tensorflow
             documentation
-            To do so reffer to the tensorflow documentation on https://www.tensorflow.org/guide/gpu
+            To do so refer to the tensorflow documentation on https://www.tensorflow.org/guide/gpu
 
         models_device: str (Default '/device:CPU:0')
             The name of the device that will be running the model masked image models.
@@ -422,13 +428,13 @@ class LanesLabeler(Preprocess):
             '/device:GPU:0' if you have 1 GPU available and one to use all its resources
             If you have more than one GPU, you can select the number of the device, also \
             you can use it's power combined or reduce the resources of the GPU you want to use.
-            It is recomended to use the logical gpus separation to run the models as explained on Tensorflow
+            It is recommended to use the logical gpus separation to run the models as explained on Tensorflow
             documentation
-            To do so reffer to the tensorflow documentation on https://www.tensorflow.org/guide/gpu
+            To do so refer to the tensorflow documentation on https://www.tensorflow.org/guide/gpu
 
-        config_path: Path (default recomended 'config.json')
-            The route to the file which contains the configuration of the package. To change it you must have a diferent
-            config file. If you don't have an specific use case for change this option use Default
+        config_path: Path (default recommended 'config.json')
+            The route to the file which contains the configuration of the package. To change it you must have a different
+            config file. If you don't have a specific use case for change this option use Default
 
 
         verbose: int (default 1)
@@ -438,7 +444,6 @@ class LanesLabeler(Preprocess):
 
         Properties
         ----------
-
         Labeler:
             An instance from ModelLabeler with the models created for masked lanenet images.
             Refer to ModelLabeler documentation to see inputs, properties and methods
@@ -446,15 +451,13 @@ class LanesLabeler(Preprocess):
         lanenet: list
             Model that creates the masked image
 
-
         Methods
         -------
-
         get_labels:
             Receive the images, create masks and scores the final models classes
 
         get_mask_images:
-            Receive the iamges and transform them into masked images
+            Receive the images and transform them into masked images
 
         """
         self.lanenet_device = lanenet_device
@@ -468,19 +471,22 @@ class LanesLabeler(Preprocess):
         self.load_config()
         self.load_lanenet_model()
         self.labeler = ModelLabeler(
-            system_path=system_path, model_type="frontal", device=self.models_device, config_path=viasegura_path / "lanenet_config.json"
+            system_path=system_path,
+            model_type="frontal",
+            device=self.models_device,
+            config_path=DEFAULT_CONFIG_PATH / DEFAULT_CONFIG_LANENET_FILE,
         )
         if self.verbose == 0:
-            print("Lanenet model loaded successfully")
+            logger.info("Lanenet model loaded successfully")
 
     def load_config(self):
         """
         Function to load data and parameters from the models
         This function only loads the configuration to the lanenet model. The configuration for the models \
-        to the masked iamges are on the ModelLabeler instance inside the LanesLabeler with its own configuration file
+        to the masked images are on the ModelLabeler instance inside the LanesLabeler with its own configuration file
 
         """
-        config = self.read_json(DEFAULT_CONFIG_PATH / self.CONFIG_PATH)
+        config = self.read_json(DEFAULT_CONFIG_PATH / DEFAULT_CONFIG_FILE)
         self.models_route = Path(config["paths"]["models_route_lanenet"])
         self.img_shape = tuple([int(n) for n in config["lanenet"]["input_shape"]])
 
@@ -491,17 +497,15 @@ class LanesLabeler(Preprocess):
         """
 
         with tf.device(self.lanenet_device):
-            if not self.downloader.check_files(self.system_path / self.models_route / "lanenet.h5"):
-                raise ImportError(
-                    "The artifacts for the model lanenet are not present use viasegura.download_models function to download them propertly"
-                )
+            if not self.downloader.check_files(str(self.system_path / self.models_route / "lanenet.h5")):
+                raise ImportError("The artifacts for the model lanenet are not present.")
             self.lanenet = tf.keras.models.load_model(
                 self.system_path / self.models_route / "lanenet.h5", custom_objects={"loss_instance": loss_instance}
             )
 
     def get_labels(self, images, batch_size=4):
         """
-        Scores the data points from the images using the diferent models inside the instance
+        Scores the data points from the images using the different models inside the instance
 
         Parameters
         ----------
@@ -513,7 +517,7 @@ class LanesLabeler(Preprocess):
         batch_size: int (default 4)
             Number of images that can be scored at the same time. This number can cause a problem on the execution
             depending on the resources available for scoring.
-            The default value has been tested on a NVIDIA RTX2070 with no issues, so we recommend to use this number
+            The default value has been tested on an NVIDIA RTX2070 with no issues, so we recommend to use this number
             if you have a GPU with similar memory available
 
 
@@ -521,7 +525,7 @@ class LanesLabeler(Preprocess):
         ----------
         dict[] np.array shape(n_groups,n_clases)
             A dictionary with the model name as key and an array of doubles as \
-            values with the probability to belong for all of the clases
+            values with the probability to belong for all the clases
         """
 
         mask_images = []
@@ -529,7 +533,7 @@ class LanesLabeler(Preprocess):
             mask_images.append(self.get_mask_images(images[offset : offset + batch_size]))
         mask_images = np.concatenate(mask_images)
         if self.verbose == 1:
-            print("Mask images generated sucessfully")
+            logger.info("Mask images generated successfully")
         return self.labeler.get_labels(mask_images, batch_size=batch_size)
 
     def get_mask_images(self, images):
@@ -545,7 +549,7 @@ class LanesLabeler(Preprocess):
 
         Returns
         ----------
-        np.array shape(n_iamges,widht, height, channels)
+        np.array shape(n_images, width, height, channels)
             Images masked and transformed
 
         """
@@ -558,7 +562,7 @@ class LanesLabeler(Preprocess):
         transformed_images[:, :, :, 2] = binary_processed_images
         return transformed_images
 
-    def _postprocess(self, binary_output, min_area_threshold=100, threshold=0.15):
+    def _postprocess(self, binary_output, threshold=0.15):
         """
         Postprocess for the binary output of the mask image
 
@@ -591,16 +595,23 @@ class LanesLabeler(Preprocess):
 
         kernel = cv2.getStructuringElement(shape=cv2.MORPH_ELLIPSE, ksize=(kernel_size, kernel_size))
 
-        # close operation fille hole
+        # close operation file hole
         closing = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel, iterations=1)
 
         return closing
 
     def _connect_components_analysis(self, image):
-        """
-        connect components analysis to remove the small components
-        :param image:
-        :return:
+        """Connect components analysis to remove small components.
+
+        Args:
+            image (np.array): Input image, can be single or multichannel.
+
+        Returns:
+            tuple: A tuple containing:
+                - num_labels (int): The number of connected components.
+                - labels (np.array): The labeled image.
+                - stats (np.array): Statistics on each connected component.
+                - centroids (np.array): Centroids of each connected component.
         """
         if len(image.shape) == 3:
             gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
