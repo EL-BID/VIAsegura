@@ -133,4 +133,3 @@ dmypy.json
 
 models/models_artifacts
 notebooks/outputs/*.csv
-*.tar.gz
