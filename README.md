@@ -37,20 +37,20 @@ below.
 | Model Name             | Description                                        | Type of Image | Classes |
 |------------------------|----------------------------------------------------|---------------|---------|
 | delineation            | Adequacy of road lines                             | Frontal       | 2       |
-| street lighting        | Presence of street lighting                        | Frontal       | 2       |
+| street_lighting        | Presence of street lighting                        | Frontal       | 2       |
 | carriageway            | Carriageway label for section                      | Frontal       | 2       |
-| service road           | Presence of a service road                         | Frontal       | 2       |
-| road condition         | Condition of the road surface                      | Frontal       | 3       |
-| skid resistance        | Skidding resistance                                | Frontal       | 3       |
-| upgrade cost           | Influence surroundings on cost of major works      | Frontal       | 3       |
-| speed management       | Presence of features to reduce operating speed     | Frontal       | 3       |
-| bicycle facility       | Presence of facilities for bicyclists              | Frontal       | 2       |
-| quality of curve       | How adequate is the curve                          | Frontal       | 2       |
-| vehicle parking        | Presence of parking on the road                    | Frontal       | 2       |
-| property access points | Detects access to properties                       | Frontal       | 2       |
+| service_road           | Presence of a service road                         | Frontal       | 2       |
+| road_condition         | Condition of the road surface                      | Frontal       | 3       |
+| skid_resistance        | Skidding resistance                                | Frontal       | 3       |
+| upgrade_cost           | Influence surroundings on cost of major works      | Frontal       | 3       |
+| speed_management       | Presence of features to reduce operating speed     | Frontal       | 3       |
+| bicycle_facility       | Presence of facilities for bicyclists              | Frontal       | 2       |
+| quality_of_curve       | How adequate is the curve                          | Frontal       | 2       |
+| vehicle_parking        | Presence of parking on the road                    | Frontal       | 2       |
+| property_access_points | Detects access to properties                       | Frontal       | 2       |
 | area_type              | Detects if there is an urban or rural area         | Lateral       | 2       |
-| land use               | Describes the use of the land surrounding the road | Lateral       | 4       |
-| number of lanes        | The number of lanes detected                       | Frontal       | 5       |
+| land_use               | Describes the use of the land surrounding the road | Lateral       | 4       |
+| number_of_lanes        | The number of lanes detected                       | Frontal       | 5       |
 
 Some of the models can identify all the classes or categories, others can help you sort through the available options.
 
@@ -85,7 +85,7 @@ In order to make the instance of a model you can use the following commands
 ```python
 from viasegura import ModelLabeler
 
-labeler = ModelLabeler( < type >) 
+labeler = ModelLabeler(<type>) 
 ```
 
 You can use either "frontal" or "lateral" tag in order to use the group of models desired (see table above)
@@ -138,5 +138,5 @@ This package has been developed by:
 
 ## License
 
-The distribution of this software is according with the
+The distribution of this software is according to the
 following [license](https://github.com/EL-BID/VIAsegura/blob/main/LICENSE.md)
