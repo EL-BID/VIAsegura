@@ -6,9 +6,12 @@ import os
 import tempfile
 from pathlib import Path
 
+# Analyze
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+
+# Graphics
 import plotly.express as px
 import tensorflow as tf
 from shapely.geometry import LineString, MultiLineString
