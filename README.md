@@ -2,7 +2,7 @@
     <h1>VIAsegura</h1>
     <h3>Automatic labeling of road safety attributes</h3>
 
-[Users manual](https://github.com/EL-BID/VIAsegura/tree/main/viasegura/manuals)
+[Users manual](https://github.com/EL-BID/VIAsegura/tree/main/viasegura/docs/users_manual.pdf)
 
 ![analytics image (flat)](https://raw.githubusercontent.com/vitr/google-analytics-beacon/master/static/badge-flat.gif)
 [![Downloads](https://pepy.tech/badge/viasegura)](https://pepy.tech/project/viasegura)
