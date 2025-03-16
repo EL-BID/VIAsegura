@@ -74,6 +74,7 @@ conda create -n viasegura python=3.10
 conda activate viasegura
 ```
 
+> Supported versions of Python are 3.9, 3.10, 3.11 and 3.12.
 > For more information on how to install conda, you can visit the [official documentation](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 
 ### Installation
@@ -90,7 +91,7 @@ Put the downloaded file on a `models` folder and decompress it with the followin
 ```bash
 tar -xzvf models.tar.gz
 ```
-
+The path where the models are must be `models/models_artifacts` 
 Remember to put that path every time you instantiate a model so that you can find the artifacts you need to run them.
 
 ### Using the Models
@@ -100,18 +101,10 @@ In order to make the instance of a model you can use the following commands
 ```python
 from viasegura import ModelLabeler
 
-labeler = ModelLabeler(<type>) 
+frontal_labeler = ModelLabeler('frontal')  # or 'lateral' 
 ```
 
 You can use either "frontal" or "lateral" tag in order to use the group of models desired (see table above)
-
-For example, we can see both instance types:
-
-```python
-from viasegura import ModelLabeler
-
-frontal_labeler = ModelLabeler('frontal')  # or 'lateral' 
-```
 
 Also, you can specify which models to load using the parameter model filter and the name of the models to use, (see the
 table above):
@@ -134,6 +127,7 @@ frontal_labeler = ModelLabeler('frontal', device='/device:GPU:0')
 
 For a full example of use on this package, you can see this 
 [notebook](https://github.com/EL-BID/VIAsegura/blob/release/v2.0.0/notebooks/execution_example.ipynb).
+In the `notebooks` folder you can also find example images to test the execution of the models.
 
 
 ## Users Guide
