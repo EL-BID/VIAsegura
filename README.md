@@ -20,12 +20,9 @@
 ## Project Description
 ---
 
-VIAsegura is an API that helps to use artificial intelligence models developed by the Inter-American Development Bank to
+VIAsegura is a library that helps to use artificial intelligence models developed by the Inter-American Development Bank to
 automatically tag items on the streets. The tags it places are some of those needed to implement the iRAP road safety
 methodology.
-
-To use it you must contact the Inter-American Development Bank to obtain the credentials that give access to the models
-with which the API works.
 
 These models require images with the specifications of the iRAP projects. This means that they have been taken every 20
 meters along the entire path to be analyzed. In addition, some of the models require images to be taken from the front
