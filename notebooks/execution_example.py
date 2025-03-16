@@ -146,7 +146,7 @@ print(f"El numero de grupos es de {number_groups}")
 device = "/device:CPU:0"
 
 # Models loading
-system_path = "../"
+system_path = "./"
 frontallabeler = ModelLabeler(
     system_path=system_path, model_type="frontal", model_filter=["delineation", "street_lighting", "carriageway"], device=device
 )

@@ -2,6 +2,8 @@
     <h1>VIAsegura</h1>
     <h3>Automatic labeling of road safety attributes</h3>
 
+[Users manual](https://github.com/EL-BID/VIAsegura/tree/main/viasegura/manuals)
+
 ![analytics image (flat)](https://raw.githubusercontent.com/vitr/google-analytics-beacon/master/static/badge-flat.gif)
 [![Downloads](https://pepy.tech/badge/viasegura)](https://pepy.tech/project/viasegura)
 </div>
@@ -63,15 +65,31 @@ Some of the features now available are as follows:
 ## Quick Start
 ---
 
+### Environment Setup
+
+It is advisable to install the library in a Python virtual environment. If you use `conda`, you can do so with the following command:
+
+```bash
+conda create -n viasegura python=3.10
+conda activate viasegura
+```
+
+> For more information on how to install conda, you can visit the [official documentation](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
+
 ### Installation
 
-To install you can use the following commands
+To install the package you can use the following commands in the terminal 
 
 ```bash
 pip install viasegura
 ```
 
-Then to download the models from [the repository](https://github.com/EL-BID/VIAsegura/raw/refs/heads/release/v2.0.0/models/models.tar.gz?download=) to ...
+To download the models use [this link from the repostitory](https://github.com/EL-BID/VIAsegura/raw/refs/heads/release/v2.0.0/models/models.tar.gz?download=).
+Put the downloaded file on a `models` folder and decompress it with the following command:
+
+```bash
+tar -xzvf models.tar.gz
+```
 
 Remember to put that path every time you instantiate a model so that you can find the artifacts you need to run them.
 
@@ -111,18 +129,18 @@ from viasegura import ModelLabeler
 
 frontal_labeler = ModelLabeler('frontal', device='/device:GPU:0') 
 ```
+> You can modify the devices used according to the [TensorFlow documentation](https://www.tensorflow.org/guide/gpu) 
+> regarding GPU usage.
+
+For a full example of use on this package, you can see this 
+[notebook](https://github.com/EL-BID/VIAsegura/blob/release/v2.0.0/notebooks/execution_example.ipynb).
+
 
 ## Users Guide
 
-You can see and entire example of use on this 
-[notebook](https://github.com/EL-BID/VIAsegura/blob/release/v2.0.0/notebooks/execution_example.ipynb) on 
-'notebooks' folder.
-
-Also make sure to see the [manual](https://github.com/EL-BID/VIAsegura/tree/main/viasegura/manuals) to understand the
+I invite you to visit the [manual](https://github.com/EL-BID/VIAsegura/tree/main/viasegura/manuals) to understand the
 scope of the project and how to make a project from scratch using the viasegura models.
 
-You can modify the devices used according to the TensorFlow documentation regarding GPU usage (
-see https://www.tensorflow.org/guide/gpu)
 
 ## Authors
 
