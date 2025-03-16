@@ -71,7 +71,7 @@ To install you can use the following commands
 pip install viasegura
 ```
 
-Then to download the models from ... to ...
+Then to download the models from [the repository](https://github.com/EL-BID/VIAsegura/raw/refs/heads/release/v2.0.0/models/models.tar.gz?download=) to ...
 
 Remember to put that path every time you instantiate a model so that you can find the artifacts you need to run them.
 
@@ -114,8 +114,9 @@ frontal_labeler = ModelLabeler('frontal', device='/device:GPU:0')
 
 ## Users Guide
 
-You can see and entire example of use
-on [this link](https://colab.research.google.com/drive/1WltAaCCOnREcuLzI3PX_IKsnHNuRttEz?usp=sharing).
+You can see and entire example of use on this 
+[notebook](https://github.com/EL-BID/VIAsegura/blob/release/v2.0.0/notebooks/execution_example.ipynb) on 
+'notebooks' folder.
 
 Also make sure to see the [manual](https://github.com/EL-BID/VIAsegura/tree/main/viasegura/manuals) to understand the
 scope of the project and how to make a project from scratch using the viasegura models.
