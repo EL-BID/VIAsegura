@@ -2,7 +2,7 @@
     <h1>VIAsegura</h1>
     <h3>Automatic labeling of road safety attributes</h3>
 
-[Users manual](https://github.com/EL-BID/VIAsegura/blob/release/v2.0.0/docs/users_manual.pdf)
+[Users manual](https://github.com/EL-BID/VIAsegura/blob/release/v2.0.0/docs/manual_viasegura.pdf)
 
 ![analytics image (flat)](https://raw.githubusercontent.com/vitr/google-analytics-beacon/master/static/badge-flat.gif)
 [![Downloads](https://pepy.tech/badge/viasegura)](https://pepy.tech/project/viasegura)
@@ -132,7 +132,7 @@ In the `notebooks` folder you can also find example images to test the execution
 
 ## Users Guide
 
-I invite you to visit the [manual](https://github.com/EL-BID/VIAsegura/tree/main/viasegura/manuals) to understand the
+I invite you to visit the [manual](https://github.com/EL-BID/VIAsegura/blob/release/v2.0.0/docs/manual_viasegura.pdf) to understand the
 scope of the project and how to make a project from scratch using the viasegura models.
 
 
