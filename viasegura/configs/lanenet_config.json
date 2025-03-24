@@ -1,0 +1,8 @@
+{
+	"paths": {
+		"models_route": "models/models_artifacts/"
+	}, 
+	"models": {
+		"frontal": ["number_of_lanes"]
+	}
+}
